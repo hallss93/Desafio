@@ -4,9 +4,9 @@ class HttpLogin {
   apiLogin: AxiosInstance;
 
   constructor() {
-    const { VITE_REACT_APP_API_LOGIN_EVM } = import.meta.env;
+    const { VITE_REACT_APP_API } = import.meta.env;
     this.apiLogin = axios.create({
-      baseURL: VITE_REACT_APP_API_LOGIN_EVM,
+      baseURL: VITE_REACT_APP_API,
       timeout: 60000,
       timeoutErrorMessage: 'Tempo limite da requisição excedido.',
       headers: {

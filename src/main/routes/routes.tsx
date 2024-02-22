@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 
+import CategoriesPage from '~/presentation/components/pages/categories';
 import HomePage from '~/presentation/components/pages/home';
 import LoginPage from '~/presentation/components/pages/login';
 
@@ -11,6 +12,7 @@ const routes = () => {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/category" element={<CategoriesPage />} />
     </Routes>
   );
 };
