@@ -1,70 +1,46 @@
-# Teste para candidatos à vaga de Desenvolvedor REACT PLENO
+# Getting Started with Create React App
 
-Olá caro desenvolvedor, nesse teste analisaremos seu conhecimento geral e inclusive velocidade de desenvolvimento. Abaixo explicaremos tudo o que será necessário.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Instruções
+## Available Scripts
 
-O desafio consiste em desenvolver uma simples aplicação WEB para um curso on-line, com as seguintes funcionalidades:
+In the project directory, you can run:
 
-- C.R.U.D de Produtos
-  - Listagem (Com paginação);
-  - Criação;
-  - Alteração;
-  - Deletar;
+### `npm start`
 
-- C.R.U.D de Categorias
-  - Listagem;
-  - Criação;
-  - Alteração;
-  - Deletar;
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-- Cada produto pode ter uma ou mais categorias vinculadas ao produto.
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-- Busca de Produtos(No Front)
+### `npm test`
 
-  Buscar produtos por Title ou Brand
-  Ordenacao de produtos por Title ou Brand
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-Deve se mostrar todos os atributos que tiverem na API
+### `npm run build`
 
-## API DE REFERENCIA
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-Crie uma API para realizar as operacoes dos produtos utilizando Node.js
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-Crie a estrutura do banco de dados utilizando postgres.
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-## Tecnologias a serem utilizadas
+### `npm run eject`
 
-Devem ser utilizadas as seguintes tecnologias:
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-- Git
-- Next (front-end)
-- Node.js
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-## Entrega
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-- Para iniciar o teste, faça um fork deste repositório; **Se você apenas clonar o repositório não vai conseguir fazer push.**
-- Crie uma branch com o seu nome completo;
-- Depois de finalizado, envie-nos o pull request;
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-## Bônus
+## Learn More
 
-Sinta-se livre para atender ou não alguns dos seguintes itens:
-- Deploy da aplicação em alguma cloud (aws, heroku, Github Pages etc);
-- Utilização de typescript;
-- Utilização de Next.js
-- Validação de entrada de dados;
-- Autenticação de usuários
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-
-## O que iremos analisar
-
-- Layout
-- Organização do código;
-- Aplicação de design patterns;
-- Aplicação de testes;
-- Separação de módulos e componentes;
-- Legibilidade;
-
-
-### Boa sorte!
+To learn React, check out the [React documentation](https://reactjs.org/).
