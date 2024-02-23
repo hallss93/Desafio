@@ -34,7 +34,7 @@ export class CategoryService {
    * @param {number} id - number - The id of the category we want to find.
    * @returns A CategoryRO object
    */
-  public async findByIdStore(id: number): Promise<CategoryRO | null> {
+  public async findById(id: number): Promise<CategoryRO | null> {
     return (await this.categoryRepository.findOneOrFail(id)).toResponseObject();
   }
 

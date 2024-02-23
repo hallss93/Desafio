@@ -1,4 +1,4 @@
-import { Button, TextField } from '@mui/material';
+import { Autocomplete, Button, TextField } from '@mui/material';
 import styled from 'styled-components';
 
 export const Page = styled.div`
@@ -77,5 +77,11 @@ export const CustomTextField = styled(TextField)({
   },
   '& .MuiFormLabel-root.Mui-focused': {
     color: '#E6226D',
+  },
+});
+
+export const CustomAutoComplete = styled(Autocomplete)({
+  '*': {
+    marginBottom: '0px',
   },
 });

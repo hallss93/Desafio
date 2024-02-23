@@ -32,13 +32,12 @@ export class CategoryController {
     @Query('page') page: number,
     @Query('size') size: number,
   ): Promise<CategoryPagination[]> {
-    console.log(page, size)
     return this.categoryService.findAllCategories(page, size);
   }
 
   @Get('/:id')
   getCategory(@Param('id') id: number): Promise<CategoryRO> {
-    return this.categoryService.findByIdStore(id);
+    return this.categoryService.findById(id);
   }
 
   @Post('/')

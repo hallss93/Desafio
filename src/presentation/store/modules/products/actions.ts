@@ -2,11 +2,11 @@ import productsService from '~/services/productsService';
 
 import { RepositoriesTypes } from './types';
 
-const getProducts = (page: number) => {
+const getProducts = (page: number, size = 5) => {
   return async (dispatch: any) => {
     dispatch({ type: RepositoriesTypes.PRODUCTS_LOADING, payload: true });
     try {
-      const response = await productsService.getAllProducts({ page, size: 5 });
+      const response = await productsService.getAllProducts({ page, size });
       dispatch({
         type: RepositoriesTypes.PRODUCTS,
         payload: response.data,

@@ -1,15 +1,20 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Grid, Snackbar, Typography } from '@mui/material';
+import { Alert, Grid, Snackbar, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import * as Yup from 'yup';
 
 import ICategory from '~/models/categoryModel';
+import IProduct from '~/models/productModel';
+import { getCategories } from '~/presentation/store/modules/categories/actions';
 
-import categoriesService from './../../../../services/categoriesService';
+import productsService from './../../../../services/productsService';
 import {
   ButtonsContainer,
+  CustomAutoComplete,
   CustomTextField,
   FormContainer,
   Header,
@@ -18,11 +23,17 @@ import {
   StyledButton,
 } from './styles';
 
-const EditCategoryPage = () => {
+const EditProductPage = () => {
+  const dispatch = useDispatch();
+  const history = useNavigate();
+
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
+  const [categoriObject, setCategoriObject] = useState<any>(null);
+  const [inputValue, setInputValue] = useState('');
 
-  const history = useNavigate();
+  const { categories } = useSelector((state: any) => state.categories);
+
   const { id } = useParams<{ id: string }>();
 
   const validationSchema = Yup.object().shape({
@@ -34,6 +45,7 @@ const EditCategoryPage = () => {
       .required('Descrição é um campo obrigatório')
       .min(3, 'Descrição deve ter no mínimo 3 caracteres')
       .max(150, 'Descrição deve ter no máximo 150 caracteres'),
+    category: Yup.string().required('Categoria é um campo obrigatório'),
   });
 
   const {
@@ -46,23 +58,34 @@ const EditCategoryPage = () => {
   });
 
   const onSubmit = (data: any) => {
-    console.log(JSON.stringify(data, null, 2));
-    handleSave(data);
+    handleSave({ ...data, category: categoriObject.id });
   };
 
   useEffect(() => {
     if (id !== 'create') {
-      categoriesService.getCategoryById({ id: Number(id) }).then((response) => {
+      productsService.getProductById({ id: Number(id) }).then((response) => {
         setValue('name', response.name);
         setValue('description', response.description);
+        setValue('category', response.category);
+        const category = categories.find((i: ICategory) => i.id === response.category);
+
+        if (category) setCategoriObject({ id: category.id, label: category.name });
       });
     }
-  }, [id]);
+  }, [categories]);
 
-  async function handleSave(data: ICategory) {
+  const getList = () => {
+    dispatch(getCategories(0, 0) as any);
+  };
+
+  useEffect(() => {
+    getList();
+  }, []);
+
+  async function handleSave(data: IProduct) {
     if (id !== 'create') {
-      await categoriesService
-        .editCategory({
+      await productsService
+        .editProduct({
           ...data,
           id: Number(id),
         })
@@ -73,8 +96,8 @@ const EditCategoryPage = () => {
           setOpenError(true);
         });
     } else {
-      await categoriesService
-        .createCategory(data)
+      await productsService
+        .createProduct(data)
         .then(() => {
           successMessageRedirect();
         })
@@ -92,7 +115,7 @@ const EditCategoryPage = () => {
   function successMessageRedirect() {
     setOpenSuccess(true);
     setTimeout(() => {
-      history('/categories');
+      history('/products');
     }, 1000);
   }
 
@@ -100,7 +123,7 @@ const EditCategoryPage = () => {
     <Page>
       <Header>
         <Typography variant="h5" width={'40%'}>
-          {id !== 'create' ? 'Editar Categoria' : 'Criar Categoria'}{' '}
+          {id !== 'create' ? 'Editar produto' : 'Criar Produto'}{' '}
         </Typography>
         <ButtonsContainer>
           <StyledButton
@@ -114,7 +137,7 @@ const EditCategoryPage = () => {
                 backgroundColor: '#e7236e0d',
               },
             }}
-            onClick={() => history('/categories')}
+            onClick={() => history('/products')}
             data-testid="cancel-button"
           >
             Cancelar
@@ -140,13 +163,38 @@ const EditCategoryPage = () => {
         <FormContainer>
           <Grid container spacing={1}>
             <Grid item xs={12} sm={12}>
+              <CustomAutoComplete
+                disablePortal
+                options={categories.map((i: ICategory) => ({ id: i.id, label: i.name }))}
+                value={categoriObject}
+                inputValue={inputValue}
+                onChange={(_, newValue) => setCategoriObject(newValue)}
+                onInputChange={(_, newInputValue: string) => setInputValue(newInputValue)}
+                getOptionLabel={(option: any) => option.label}
+                isOptionEqualToValue={(option: any, value: any) => option?.label === value?.label}
+                renderInput={(params) => (
+                  <TextField
+                    variant="standard"
+                    {...params}
+                    label="Categoria"
+                    InputLabelProps={{ shrink: true }}
+                    {...register('category')}
+                    error={!!errors.category}
+                  />
+                )}
+              />
+              <Typography variant="caption" color="red">
+                {errors.category?.message}
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={12}>
               <CustomTextField
-                label="Nome da Categoria"
+                label="Nome do Produto"
                 variant="standard"
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 {...register('name')}
-                error={errors.name ? true : false}
+                error={!!errors.name}
               />
               <Typography variant="caption" color="red">
                 {errors.name?.message}
@@ -159,7 +207,7 @@ const EditCategoryPage = () => {
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 {...register('description')}
-                error={errors.description ? true : false}
+                error={!!errors.description}
               />
               <Typography variant="caption" color="red">
                 {errors.description?.message}
@@ -183,11 +231,11 @@ const EditCategoryPage = () => {
         onClose={handleClose}
       >
         <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
-          Categoria {id !== 'create' ? 'editada' : 'criada'} com sucesso;
+          Produto {id !== 'create' ? 'editada' : 'criada'} com sucesso;
         </Alert>
       </Snackbar>
     </Page>
   );
 };
 
-export default EditCategoryPage;
+export default EditProductPage;

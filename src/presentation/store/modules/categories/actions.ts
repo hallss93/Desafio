@@ -2,11 +2,11 @@ import categoriesService from '~/services/categoriesService';
 
 import { RepositoriesTypes } from './types';
 
-const getCategories = (page: number) => {
+const getCategories = (page: number, size = 5) => {
   return async (dispatch: any) => {
     dispatch({ type: RepositoriesTypes.CATEGORIES_LOADING, payload: true });
     try {
-      const response = await categoriesService.getAllCategories({ page, size: 5 });
+      const response = await categoriesService.getAllCategories({ page, size });
       dispatch({
         type: RepositoriesTypes.CATEGORIES,
         payload: response.data,

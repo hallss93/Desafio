@@ -14,7 +14,7 @@ import { BiErrorCircle, BiInfoCircle } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import IProduct from '~/models/categoryModel';
+import IProduct from '~/models/productModel';
 
 import { deleteProduct, getProducts } from './../../../store/modules/products/actions';
 import {
@@ -80,6 +80,7 @@ const ProductsTable = () => {
             <TableRow>
               <HeaderCell>Nome</HeaderCell>
               <HeaderCell>Descrição</HeaderCell>
+              <HeaderCell>Categoria</HeaderCell>
               <HeaderCell>Criado</HeaderCell>
               <HeaderCell>Atualizado</HeaderCell>
               <HeaderCell>Ação</HeaderCell>
@@ -123,6 +124,7 @@ const ProductsTable = () => {
                 <TableRow>
                   <TableCell>{row.name}</TableCell>
                   <TableCell>{row.description}</TableCell>
+                  <TableCell>{row.category?.name}</TableCell>
                   <TableCell>{format(row.created, 'dd/mm/yyyy H:mma')}</TableCell>
                   <TableCell>{format(row.updated, 'dd/mm/yyyy H:mma')}</TableCell>
                   <TableCell>

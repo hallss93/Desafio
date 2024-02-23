@@ -8,7 +8,7 @@ export class CreateProductUseCaser implements ICreateProduct {
   async send(params: ICreateProduct.Params): Promise<any> {
     const { body, config } = params;
 
-    const response = await this.httpClient.post(`category`, body, config);
+    const response = await this.httpClient.post(`product`, body, config);
 
     return response.data;
   }

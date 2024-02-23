@@ -14,6 +14,8 @@ import { PathResolver } from './path.resolver';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Log } from './models/log/entities/logs.entity';
+import { ProductModule } from './models/product/product.module';
+import { Product } from './models/product/entities/product.entity';
 
 @Module({
   imports: [
@@ -40,7 +42,7 @@ import { Log } from './models/log/entities/logs.entity';
       username: process.env.TYPEORM_USERNAME,
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
-      entities: [Category, Log],
+      entities: [Log, Category, Product],
       ssl: false,
       synchronize: process.env.NODE_ENV !== 'production',
       migrations: ['dist/migrations/*{.ts,.js}'],
@@ -48,6 +50,7 @@ import { Log } from './models/log/entities/logs.entity';
       migrationsRun: process.env.NODE_ENV !== 'production',
     }),
     CategoryModule,
+    ProductModule,
   ],
   controllers: [AppController],
   providers: [AppService],
