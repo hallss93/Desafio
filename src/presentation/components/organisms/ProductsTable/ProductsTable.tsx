@@ -14,9 +14,9 @@ import { BiErrorCircle, BiInfoCircle } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import ICategory from '~/models/categoryModel';
+import IProduct from '~/models/categoryModel';
 
-import { deleteCategory, getCategories } from './../../../store/modules/categories/actions';
+import { deleteProduct, getProducts } from './../../../store/modules/products/actions';
 import {
   Divider,
   ErrorContainer,
@@ -37,13 +37,13 @@ const ProductsTable = () => {
   const [itemSelected, setItemSelected] = useState(0);
   const [page, setPage] = useState(1);
 
-  const { categories, pagination, categoriesError, categoriesLoading, deleteLoading } = useSelector(
-    (state: any) => state.categories,
+  const { products, pagination, productsError, productsLoading, deleteLoading } = useSelector(
+    (state: any) => state.products,
   );
   const history = useNavigate();
 
   const getList = () => {
-    dispatch(getCategories(page - 1) as any);
+    dispatch(getProducts(page - 1) as any);
   };
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const ProductsTable = () => {
   };
 
   const handleDelete = async () => {
-    await dispatch(deleteCategory(itemSelected) as any);
+    await dispatch(deleteProduct(itemSelected) as any);
     setOpen(false);
     getList();
   };
@@ -69,7 +69,7 @@ const ProductsTable = () => {
     if (p === page) return;
 
     setPage(p);
-    dispatch(getCategories(p - 1) as any);
+    dispatch(getProducts(p - 1) as any);
   };
 
   return (
@@ -91,14 +91,14 @@ const ProductsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categoriesLoading && (
+            {productsLoading && (
               <TableRow>
                 <TableCell colSpan={5}>
                   <InfoContainer>Carregando...</InfoContainer>
                 </TableCell>
               </TableRow>
             )}
-            {categoriesError && (
+            {productsError && (
               <TableRow>
                 <TableCell colSpan={5}>
                   <ErrorContainer>
@@ -108,7 +108,7 @@ const ProductsTable = () => {
                 </TableCell>
               </TableRow>
             )}
-            {!categoriesLoading && categories.length === 0 && !categoriesError && (
+            {!productsLoading && products.length === 0 && !productsError && (
               <TableRow>
                 <TableCell colSpan={5}>
                   <InfoContainer>
@@ -118,7 +118,7 @@ const ProductsTable = () => {
                 </TableCell>
               </TableRow>
             )}
-            {categories.map((row: ICategory) => (
+            {products.map((row: IProduct) => (
               <Fragment key={row.id}>
                 <TableRow>
                   <TableCell>{row.name}</TableCell>
@@ -129,10 +129,7 @@ const ProductsTable = () => {
                     <IconButton aria-label="delete" onClick={() => handleClickOpen(row.id)}>
                       <DeleteIcon />
                     </IconButton>
-                    <IconButton
-                      aria-label="delete"
-                      onClick={() => history(`/categories/${row.id}`)}
-                    >
+                    <IconButton aria-label="delete" onClick={() => history(`/products/${row.id}`)}>
                       <EditIcon color="primary" />
                     </IconButton>
                   </TableCell>
@@ -159,10 +156,10 @@ const ProductsTable = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Apagar Categoria</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Apagar Produto</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Tem certeza que deseja apagar essa categoria? Essa ação é irreversível!
+            Tem certeza que deseja apagar essa produto? Essa ação é irreversível!
           </DialogContentText>
         </DialogContent>
         <DialogActions>

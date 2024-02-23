@@ -1,7 +1,7 @@
 import { apiLogin } from '../../repositories/http-login';
-import { DeleteCategoriesUseCase } from '../delete-categories';
+import { DeleteCategoryUseCase } from '../delete-category';
 
 export const makeDeleteCategory = () => {
-  const deleteCategoriesUseCase = new DeleteCategoriesUseCase(apiLogin);
-  return deleteCategoriesUseCase;
+  const deleteCategoryUseCase = new DeleteCategoryUseCase(apiLogin);
+  return deleteCategoryUseCase;
 };
