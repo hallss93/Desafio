@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import Count from './../../common/interfaces/Count';
 import { Category } from './entities/category.entity';
 
@@ -30,4 +30,7 @@ export class CategoryService {
     });
   }
 
+  public delete(id: number): Promise<DeleteResult> {
+    return this.categoryRepository.delete(id);
+  }
 }
