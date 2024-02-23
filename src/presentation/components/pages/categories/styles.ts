@@ -6,8 +6,11 @@ export const Page = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  margin-top: 16px;
-  margin-bottom: 16px;
+  width: 100%;
+  height: 100vh;
+  padding-right: 24px;
+  padding-left: 24px;
+  overflow-y: auto;
 `;
 
 export const PageContainer = styled.div`
@@ -15,7 +18,9 @@ export const PageContainer = styled.div`
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  width: 100vw;
+  width: 100%;
+  margin-top: 16px;
+  margin-bottom: 16px;
 `;
 
 export const Header = styled.div`
@@ -37,6 +42,4 @@ export const StyledButton = styled(Button)`
   text-transform: none;
   border-radius: 4px;
   padding: 0.5rem 1rem;
-  margin-right: 24px !important;
-  margin-left: 24px !important;
 `;

@@ -6,10 +6,16 @@ const INITIAL_STATE: IRepositoriesState = {
   categories: [],
   categoriesLoading: true,
   categoriesError: false,
+  deleteLoading: false,
 };
 
 const reducer: Reducer<IRepositoriesState, any> = (state = INITIAL_STATE, action) => {
   switch (action.type) {
+    case RepositoriesTypes.CATEGORIES_DELETE_LOADING:
+      return {
+        ...state,
+        deleteLoading: action.payload,
+      };
     case RepositoriesTypes.CATEGORIES_LOADING:
       return {
         ...state,

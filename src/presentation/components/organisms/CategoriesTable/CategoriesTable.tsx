@@ -1,14 +1,23 @@
-import { Fragment, useEffect } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import LoadingButton from '@mui/lab/LoadingButton';
+import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import IconButton from '@mui/material/IconButton';
+import React, { Fragment, useEffect, useState } from 'react';
 import { BiErrorCircle, BiInfoCircle } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import ICategory from '~/models/categoryModel';
 
-import { getCategories } from './../../../store/modules/categories/actions';
+import { deleteCategory, getCategories } from './../../../store/modules/categories/actions';
 import {
   Divider,
-  EditLink,
   ErrorContainer,
   HeaderCell,
   InfoContainer,
@@ -22,26 +31,24 @@ import {
 
 const CategoriesTable = () => {
   const dispatch = useDispatch();
-  const { categories, categoriesError, categoriesLoading } = useSelector(
+  const [open, setOpen] = useState(false);
+  const [iemSelected, setItemSelected] = useState(0);
+
+  const { categories, categoriesError, categoriesLoading, deleteLoading } = useSelector(
     (state: any) => state.categories,
   );
   const history = useNavigate();
 
-  useEffect(() => {
+  const getList = () => {
     dispatch(getCategories() as any);
+  };
+
+  useEffect(() => {
+    getList();
   }, []);
 
   if (categoriesLoading) {
     return <InfoContainer>Carregando...</InfoContainer>;
-  }
-
-  if (!categoriesLoading && !categories?.length) {
-    return (
-      <InfoContainer>
-        <BiInfoCircle size={24} />
-        Não encontramos resultados para sua pesquisa.
-      </InfoContainer>
-    );
   }
 
   if (categoriesError) {
@@ -53,45 +60,102 @@ const CategoriesTable = () => {
     );
   }
 
+  if (!categoriesLoading && !categories?.length) {
+    return (
+      <InfoContainer>
+        <BiInfoCircle size={24} />
+        Não encontramos resultados para sua pesquisa.
+      </InfoContainer>
+    );
+  }
+
+  const handleClickOpen = (id: number) => {
+    setItemSelected(id);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleDelete = async () => {
+    await dispatch(deleteCategory(iemSelected) as any);
+    setOpen(false);
+    getList();
+  };
+
   return (
-    <TableContainer>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <HeaderCell>Nome</HeaderCell>
-            <HeaderCell>Descrição</HeaderCell>
-            <HeaderCell>Criado</HeaderCell>
-            <HeaderCell>Atualizado</HeaderCell>
-            <HeaderCell>Ação</HeaderCell>
-          </TableRow>
-          <TableRow>
-            <TableCell colSpan={6}>
-              <Divider />
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {categories.map((row: ICategory) => (
-            <Fragment key={row.id}>
-              <TableRow>
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.description}</TableCell>
-                <TableCell>{row.created}</TableCell>
-                <TableCell>{row.updated}</TableCell>
-                <TableCell>
-                  <EditLink onClick={() => history(`/category/${row.id}`)}>Editar</EditLink>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell colSpan={6}>
-                  <Divider />
-                </TableCell>
-              </TableRow>
-            </Fragment>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <HeaderCell>Nome</HeaderCell>
+              <HeaderCell>Descrição</HeaderCell>
+              <HeaderCell>Criado</HeaderCell>
+              <HeaderCell>Atualizado</HeaderCell>
+              <HeaderCell>Ação</HeaderCell>
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={6}>
+                <Divider />
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {categories.map((row: ICategory) => (
+              <Fragment key={row.id}>
+                <TableRow>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.description}</TableCell>
+                  <TableCell>{row.created}</TableCell>
+                  <TableCell>{row.updated}</TableCell>
+                  <TableCell>
+                    <IconButton aria-label="delete">
+                      <DeleteIcon onClick={() => handleClickOpen(row.id)} />
+                    </IconButton>
+                    <IconButton aria-label="delete">
+                      <EditIcon color="primary" onClick={() => history(`/category/${row.id}`)} />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell colSpan={6}>
+                    <Divider />
+                  </TableCell>
+                </TableRow>
+              </Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Deletar Categoria</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Tem certeza que deseja apagar essa categoria? Essa ação é irreversível!
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button variant="outlined" onClick={handleClose}>
+            Cancelar
+          </Button>
+          <LoadingButton
+            loading={deleteLoading}
+            variant="contained"
+            color="primary"
+            onClick={handleDelete}
+          >
+            Deletar
+          </LoadingButton>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
