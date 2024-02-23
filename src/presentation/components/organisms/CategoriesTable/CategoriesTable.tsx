@@ -1,7 +1,6 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Pagination } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -9,6 +8,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
+import { format } from 'date-fns';
 import React, { Fragment, useEffect, useState } from 'react';
 import { BiErrorCircle, BiInfoCircle } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
@@ -123,8 +123,8 @@ const CategoriesTable = () => {
                 <TableRow>
                   <TableCell>{row.name}</TableCell>
                   <TableCell>{row.description}</TableCell>
-                  <TableCell>{row.created}</TableCell>
-                  <TableCell>{row.updated}</TableCell>
+                  <TableCell>{format(row.created, 'dd/mm/yyyy H:mma')}</TableCell>
+                  <TableCell>{format(row.updated, 'dd/mm/yyyy H:mma')}</TableCell>
                   <TableCell>
                     <IconButton aria-label="delete" onClick={() => handleClickOpen(row.id)}>
                       <DeleteIcon />
