@@ -129,7 +129,10 @@ const CategoriesTable = () => {
                     <IconButton aria-label="delete" onClick={() => handleClickOpen(row.id)}>
                       <DeleteIcon />
                     </IconButton>
-                    <IconButton aria-label="delete" onClick={() => history(`/category/${row.id}`)}>
+                    <IconButton
+                      aria-label="delete"
+                      onClick={() => history(`/categories/${row.id}`)}
+                    >
                       <EditIcon color="primary" />
                     </IconButton>
                   </TableCell>

@@ -67,10 +67,7 @@ const EditCategoryPage = () => {
           id: Number(id),
         })
         .then(() => {
-          setOpenSuccess(true);
-          setTimeout(() => {
-            history('/category');
-          }, 1000);
+          successMessageRedirect();
         })
         .catch(() => {
           setOpenError(true);
@@ -79,10 +76,7 @@ const EditCategoryPage = () => {
       await categoriesService
         .createCategory(data)
         .then(() => {
-          setOpenSuccess(true);
-          setTimeout(() => {
-            history('/category');
-          }, 1000);
+          successMessageRedirect();
         })
         .catch(() => {
           setOpenError(true);
@@ -93,6 +87,13 @@ const EditCategoryPage = () => {
   function handleClose() {
     setOpenError(false);
     setOpenSuccess(false);
+  }
+
+  function successMessageRedirect() {
+    setOpenSuccess(true);
+    setTimeout(() => {
+      history('/categories');
+    }, 1000);
   }
 
   return (
@@ -113,7 +114,7 @@ const EditCategoryPage = () => {
                 backgroundColor: '#e7236e0d',
               },
             }}
-            onClick={() => history('/category')}
+            onClick={() => history('/categories')}
             data-testid="cancel-button"
           >
             Cancelar

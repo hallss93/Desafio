@@ -44,12 +44,12 @@ const successHandler = (response: any) => {
 
 const { VITE_REACT_APP_API } = import.meta.env;
 
-const axiosEVMInstance = axios.create({
+const axiosInstance = axios.create({
   ...axiosConfigDefault,
   baseURL: VITE_REACT_APP_API,
 });
 
-[axiosEVMInstance].forEach((item, index) => {
+[axiosInstance].forEach((item, index) => {
   item.interceptors.request.use(requestHandler, errorHandler);
 
   item.interceptors.response.use(successHandler, index === 0 ? errorHandler : errorLoginHandler);
@@ -59,4 +59,4 @@ const defaultApi = axios.create({
   ...axiosConfigDefault,
 });
 
-export { axiosEVMInstance, defaultApi };
+export { axiosInstance, defaultApi };
