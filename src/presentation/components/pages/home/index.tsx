@@ -1,22 +1,19 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
 type HomePageProps = {};
 
+import { ReactSVG } from 'react-svg';
+
+import Logo from '../../../assets/images/logo.svg';
+import { LogoContainer } from '../../organisms/SideMenu/styles';
 import { MainContainer } from './styles';
 
 const HomePage: React.FC<HomePageProps> = () => {
-  const text = 'Clique aqui para ir pra login';
-  const history = useNavigate();
   return (
     <MainContainer>
-      <button
-        onClick={() => {
-          history('/login');
-        }}
-      >
-        {text}
-      </button>
+      <LogoContainer>
+        <ReactSVG src={Logo} />
+      </LogoContainer>
     </MainContainer>
   );
 };

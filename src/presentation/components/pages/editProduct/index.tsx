@@ -11,6 +11,7 @@ import ICategory from '~/models/categoryModel';
 import IProduct from '~/models/productModel';
 import { getCategories } from '~/presentation/store/modules/categories/actions';
 
+import InputFileUpload from '../../molecules/FileInput';
 import productsService from './../../../../services/productsService';
 import {
   ButtonsContainer,
@@ -20,6 +21,7 @@ import {
   Header,
   Page,
   PageContainer,
+  ProductImage,
   StyledButton,
 } from './styles';
 
@@ -29,8 +31,9 @@ const EditProductPage = () => {
 
   const [openError, setOpenError] = useState(false);
   const [openSuccess, setOpenSuccess] = useState(false);
-  const [categoriObject, setCategoriObject] = useState<any>(null);
+  const [categoryObject, setCategoryObject] = useState<any>(null);
   const [inputValue, setInputValue] = useState('');
+  const [file, setFile] = useState<Blob>();
 
   const { categories } = useSelector((state: any) => state.categories);
 
@@ -58,7 +61,7 @@ const EditProductPage = () => {
   });
 
   const onSubmit = (data: any) => {
-    handleSave({ ...data, category: categoriObject.id });
+    handleSave({ ...data, category: categoryObject.id, id });
   };
 
   useEffect(() => {
@@ -69,7 +72,7 @@ const EditProductPage = () => {
         setValue('category', response.category);
         const category = categories.find((i: ICategory) => i.id === response.category);
 
-        if (category) setCategoriObject({ id: category.id, label: category.name });
+        if (category) setCategoryObject({ id: category.id, label: category.name });
       });
     }
   }, [categories]);
@@ -83,12 +86,16 @@ const EditProductPage = () => {
   }, []);
 
   async function handleSave(data: IProduct) {
+    const formData = new FormData();
+    formData.append('id', data.id);
+    formData.append('name', data.name);
+    formData.append('description', data.description);
+    formData.append('category', categoryObject.id);
+    if (file) formData.append('image', file);
+
     if (id !== 'create') {
       await productsService
-        .editProduct({
-          ...data,
-          id: Number(id),
-        })
+        .editProduct(Number(id), formData)
         .then(() => {
           successMessageRedirect();
         })
@@ -97,7 +104,7 @@ const EditProductPage = () => {
         });
     } else {
       await productsService
-        .createProduct(data)
+        .createProduct(formData)
         .then(() => {
           successMessageRedirect();
         })
@@ -117,6 +124,23 @@ const EditProductPage = () => {
     setTimeout(() => {
       history('/products');
     }, 1000);
+  }
+
+  function handleChangeImage(event: any) {
+    console.log(event.target.files);
+    if (event.target.files.length) {
+      setFile(event.target.files[0]);
+      const tgt = event.target,
+        files = tgt.files;
+
+      if (FileReader && files.length) {
+        const fr = new FileReader();
+        fr.onload = function () {
+          document?.getElementById('product-img')?.setAttribute('src', fr.result as string);
+        };
+        fr.readAsDataURL(files[0]);
+      }
+    }
   }
 
   return (
@@ -162,13 +186,28 @@ const EditProductPage = () => {
       <PageContainer>
         <FormContainer>
           <Grid container spacing={1}>
+            <Grid
+              item
+              xs={12}
+              sm={12}
+              container
+              direction="column"
+              justifyContent="center"
+              alignItems="center"
+            >
+              {file && <ProductImage id="product-img" alt="Produto" />}
+              <InputFileUpload
+                description="Escolher Imagem"
+                handleChange={handleChangeImage}
+              ></InputFileUpload>
+            </Grid>
             <Grid item xs={12} sm={12}>
               <CustomAutoComplete
                 disablePortal
                 options={categories.map((i: ICategory) => ({ id: i.id, label: i.name }))}
-                value={categoriObject}
+                value={categoryObject}
                 inputValue={inputValue}
-                onChange={(_, newValue) => setCategoriObject(newValue)}
+                onChange={(_, newValue) => setCategoryObject(newValue)}
                 onInputChange={(_, newInputValue: string) => setInputValue(newInputValue)}
                 getOptionLabel={(option: any) => option.label}
                 isOptionEqualToValue={(option: any, value: any) => option?.label === value?.label}

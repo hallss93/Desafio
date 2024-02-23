@@ -7,6 +7,8 @@ export class ProductDto {
   readonly name: string;
   @ApiProperty()
   readonly description: string;
+  @ApiProperty()
+  readonly image?: string;
 }
 
 export class ProductPagination {

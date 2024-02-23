@@ -30,6 +30,7 @@ import {
   TableHead,
   TableRow,
 } from './styles';
+import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 
 const ProductsTable = () => {
   const dispatch = useDispatch();
@@ -122,7 +123,18 @@ const ProductsTable = () => {
             {products.map((row: IProduct) => (
               <Fragment key={row.id}>
                 <TableRow>
-                  <TableCell>{row.name}</TableCell>
+                  <TableCell>
+                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                      <ListItem>
+                        {row.image && (
+                          <ListItemAvatar>
+                            <Avatar alt={row.name} src={row.image} />
+                          </ListItemAvatar>
+                        )}
+                        <ListItemText primary={row.name} />
+                      </ListItem>
+                    </List>
+                  </TableCell>
                   <TableCell>{row.description}</TableCell>
                   <TableCell>{row.category?.name}</TableCell>
                   <TableCell>{format(row.created, 'dd/mm/yyyy H:mma')}</TableCell>

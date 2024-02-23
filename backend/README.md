@@ -32,6 +32,13 @@
 $ npm install
 ```
 
+Configure AWS S3 in `.env.development` and/or `.env.production`:
+
+```bash
+AWS_S3_ACCESS_KEY_ID=
+AWS_S3_SECRET_ACCESS_KEY=
+```
+
 ## Running the app
 
 ```bash

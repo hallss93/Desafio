@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import * as AWS from 'aws-sdk';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import Count from '../../common/interfaces/Count';
@@ -8,6 +9,12 @@ import { ProductDto } from './interfaces/product.dto';
 
 @Injectable()
 export class ProductService {
+  AWS_S3_BUCKET = 'demo-nest';
+  s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+  });
+
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -39,8 +46,17 @@ export class ProductService {
     return (await this.productRepository.findOneOrFail(id)).toResponseObject();
   }
 
-  public async create(product: ProductDto): Promise<Product | any> {
-    const newProduct = this.productRepository.create(product);
+  public async create(product: ProductDto, file): Promise<Product | any> {
+    let object: Product = product as Product;
+    if (file) {
+      const aws_image_object = await this.uploadFile(file);
+
+      object.image = aws_image_object.Location;
+    }
+
+    const newProduct = this.productRepository.create({
+      ...object,
+    });
     await newProduct.save();
     return newProduct.toResponseObject();
   }
@@ -48,13 +64,22 @@ export class ProductService {
   public async update(
     id: number,
     newValue: ProductDto,
+    file,
   ): Promise<ProductRO | null> {
     const product = await this.productRepository.findOneOrFail(id);
     if (!product.id) {
       // tslint:disable-next-line:no-console
       console.error("product doesn't exist");
     }
-    const newProduct = this.productRepository.create(newValue);
+
+    let object: Product = newValue as Product;
+    if (file) {
+      const aws_image_object = await this.uploadFile(file);
+
+      object.image = aws_image_object.Location;
+    }
+
+    const newProduct = this.productRepository.create(object);
     await this.productRepository.update(id, newProduct);
     const find = await this.productRepository.findOne(id);
     return find.toResponseObject();
@@ -62,5 +87,37 @@ export class ProductService {
 
   public delete(id: number): Promise<DeleteResult> {
     return this.productRepository.delete(id);
+  }
+
+  async uploadFile(file) {
+    console.log(file);
+    const { originalname } = file;
+
+    return await this.s3_upload(
+      file.buffer,
+      this.AWS_S3_BUCKET,
+      originalname,
+      file.mimetype,
+    );
+  }
+  async s3_upload(file, bucket, name, mimetype) {
+    const params = {
+      Bucket: bucket,
+      Key: String(name),
+      Body: file,
+      ACL: 'public-read',
+      ContentType: mimetype,
+      ContentDisposition: 'inline',
+      CreateBucketConfiguration: {
+        LocationConstraint: 'ap-south-1',
+      },
+    };
+
+    try {
+      let s3Response = await this.s3.upload(params).promise();
+      return s3Response;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

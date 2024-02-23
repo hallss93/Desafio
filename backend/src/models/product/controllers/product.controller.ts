@@ -7,6 +7,7 @@ import {
   Post,
   Put,
   Query,
+  UploadedFile,
   UseInterceptors,
   ValidationPipe,
 } from '@nestjs/common';
@@ -15,6 +16,7 @@ import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { ProductService } from '../../product/product.service';
 import { ProductDto, ProductPagination } from '../interfaces/product.dto';
 
+import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationInterceptor } from '../../../common/interceptors/pagination.interceptor';
 import { DeleteResult } from 'typeorm';
 import { ProductRO } from '../interfaces/product.ro';
@@ -32,7 +34,7 @@ export class ProductController {
     @Query('page') page: number,
     @Query('size') size: number,
   ): Promise<ProductPagination[]> {
-    console.log(size)
+    console.log(size);
     return this.productService.findAllProducts(page, size);
   }
 
@@ -42,16 +44,22 @@ export class ProductController {
   }
 
   @Post('/')
-  postProduct(@Body(ValidationPipe) product: Product): Promise<ProductDto> {
-    return this.productService.create(product);
+  @UseInterceptors(FileInterceptor('image'))
+  postProduct(
+    @Body() product: Product,
+    @UploadedFile() image: Express.Multer.File,
+  ): Promise<ProductDto> {
+    return this.productService.create(product, image);
   }
 
   @Put('/:id')
+  @UseInterceptors(FileInterceptor('image'))
   updateProduct(
     @Param('id') id: number,
-    @Body(ValidationPipe) product: Product,
+    @Body() product: Product,
+    @UploadedFile() image: Express.Multer.File,
   ): Promise<ProductRO> {
-    return this.productService.update(id, product);
+    return this.productService.update(id, product, image);
   }
 
   @Delete('/:id')

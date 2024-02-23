@@ -26,6 +26,11 @@ export class Product extends CreatedUpdatedEntity {
   @IsString()
   description: string;
 
+  @Column({ nullable: true })
+  @ApiProperty()
+  @IsString()
+  image: string;
+
   @Column({ nullable: false })
   @ApiProperty()
   @IsInt()

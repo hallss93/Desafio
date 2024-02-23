@@ -14,6 +14,8 @@ export class Product1635843985654 implements MigrationInterface {
       for (let i = 0; i < 10; i++) {
         const product = {
           category: j,
+          image:
+            'https://demo-nest.s3.amazonaws.com/6cc10c7605fcca23cfdae7cd8701ce23.jpg',
           name: chance.name(),
           description: chance.sentence({ words: randomIntFromInterval(8, 12) }),
         };

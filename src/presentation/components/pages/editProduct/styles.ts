@@ -85,3 +85,12 @@ export const CustomAutoComplete = styled(Autocomplete)({
     marginBottom: '0px',
   },
 });
+
+export const ProductImage = styled.img`
+  width: 180px;
+  max-width: 180px;
+  height: auto;
+  max-height: 180px;
+  object-fit: cover;
+  margin-bottom: 10px;
+`;
