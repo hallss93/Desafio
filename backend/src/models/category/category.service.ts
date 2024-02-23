@@ -12,23 +12,20 @@ export class CategoryService {
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
   ) {}
-  public findAll(skip: number, take: number): Promise<Count<Category> | any> {
-    return this.categoryRepository.findAndCount({ take, skip });
-  }
 
   /**
    * It returns a promise of a count of categories or any
-   * @param {number} skip - number - The number of records to skip.
-   * @param {number} take - number of records to return
+   * @param {number} page - number - The number of records to page.
+   * @param {number} size - number of records to return
    * @returns Promise<Count<Category> | any>
    */
   public findAllCategories(
-    skip: number,
-    take: number,
+    page: number,
+    size: number,
   ): Promise<Count<Category> | any> {
     return this.categoryRepository.findAndCount({
-      take,
-      skip,
+      take: size,
+      skip: page * size,
     });
   }
 

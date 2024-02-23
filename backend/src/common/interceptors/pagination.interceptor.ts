@@ -15,12 +15,6 @@ export class PaginationInterceptor implements NestInterceptor {
     const newSize = query.size && !isNaN(query.size) ? Number(query.size) : 10;
     const newPage = query.page && !isNaN(query.page) ? Number(query.page) : 0;
 
-    context.switchToHttp().getRequest().query.page = newPage;
-    context.switchToHttp().getRequest().query.size = newSize;
-
-    context.switchToHttp().getRequest().query.take = newSize;
-    context.switchToHttp().getRequest().query.skip = newPage * newSize;
-
     return next.handle().pipe(
       map((data) => {
         const totalPages = Math.ceil(data[1] / newSize);

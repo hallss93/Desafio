@@ -6,7 +6,7 @@ const getCategories = (page: number) => {
   return async (dispatch: any) => {
     dispatch({ type: RepositoriesTypes.CATEGORIES_LOADING, payload: true });
     try {
-      const response = await categoriesService.getAllCategories({ page });
+      const response = await categoriesService.getAllCategories({ page, size: 5 });
       dispatch({
         type: RepositoriesTypes.CATEGORIES,
         payload: response.data,

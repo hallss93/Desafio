@@ -23,7 +23,7 @@ const CategoriesPage: React.FC = () => {
             },
           }}
           data-testid="create-button"
-          onClick={() => history('/category/create')}
+          onClick={() => history('/categories/create')}
         >
           Criar
         </StyledButton>

@@ -159,7 +159,7 @@ const CategoriesTable = () => {
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">Deletar Categoria</DialogTitle>
+        <DialogTitle id="alert-dialog-title">Apagar Categoria</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
             Tem certeza que deseja apagar essa categoria? Essa ação é irreversível!
@@ -175,7 +175,7 @@ const CategoriesTable = () => {
             color="primary"
             onClick={handleDelete}
           >
-            Deletar
+            Apagar
           </LoadingButton>
         </DialogActions>
       </Dialog>

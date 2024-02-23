@@ -29,10 +29,11 @@ export class CategoryController {
   @UseInterceptors(PaginationInterceptor)
   @ApiOkResponse({ type: CategoryPagination, isArray: true })
   async getCategoryList(
-    @Query('skip') skip: number,
-    @Query('take') take: number,
+    @Query('page') page: number,
+    @Query('size') size: number,
   ): Promise<CategoryPagination[]> {
-    return this.categoryService.findAllCategories(skip, take);
+    console.log(page, size)
+    return this.categoryService.findAllCategories(page, size);
   }
 
   @Get('/:id')
