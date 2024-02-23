@@ -2,7 +2,7 @@ import { AxiosInstance } from 'axios';
 
 import { IGetAllCategories } from '~/domain/use-cases/get-all-categories';
 
-export class GetAllCategoriesUseCaser implements IGetAllCategories {
+export class GetAllCategoriesUseCase implements IGetAllCategories {
   constructor(private readonly httpGetClient: AxiosInstance) {}
 
   async send(params: IGetAllCategories.Params): Promise<any> {

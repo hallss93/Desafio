@@ -1,7 +1,7 @@
 import { apiLogin } from '../../repositories/http-login';
-import { GetAllCategoriesUseCaser } from '../get-all-categories';
+import { GetAllCategoriesUseCase } from '../get-all-categories';
 
 export const makeGetAllCategories = () => {
-  const getAllCategoriesUseCase = new GetAllCategoriesUseCaser(apiLogin);
+  const getAllCategoriesUseCase = new GetAllCategoriesUseCase(apiLogin);
   return getAllCategoriesUseCase;
 };

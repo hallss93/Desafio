@@ -1,3 +1,4 @@
+import { Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 import CategoriesTable from '../../organisms/CategoriesTable/CategoriesTable';
@@ -8,6 +9,9 @@ const CategoriesPage: React.FC = () => {
   return (
     <Page>
       <Header>
+        <Typography variant="h5" width={'50%'}>
+          Categorias
+        </Typography>
         <StyledButton
           variant="contained"
           sx={{

@@ -7,6 +7,14 @@ const INITIAL_STATE: IRepositoriesState = {
   categoriesLoading: true,
   categoriesError: false,
   deleteLoading: false,
+  pagination: {
+    nextPage: null,
+    page: 0,
+    previousPage: null,
+    size: 10,
+    totalItems: 0,
+    totalPages: 1,
+  },
 };
 
 const reducer: Reducer<IRepositoriesState, any> = (state = INITIAL_STATE, action) => {
@@ -26,6 +34,11 @@ const reducer: Reducer<IRepositoriesState, any> = (state = INITIAL_STATE, action
         ...state,
         categoriesLoading: false,
         categories: action.payload,
+      };
+    case RepositoriesTypes.CATEGORIES_PAGINATION:
+      return {
+        ...state,
+        pagination: action.payload,
       };
     case RepositoriesTypes.CATEGORIES_ERROR:
       return {

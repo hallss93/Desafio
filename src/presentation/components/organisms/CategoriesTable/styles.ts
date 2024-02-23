@@ -1,3 +1,4 @@
+import { Pagination } from '@mui/material';
 import styled from 'styled-components';
 
 export const TableContainer = styled.div`
@@ -131,4 +132,10 @@ export const EditLink = styled.div`
   letter-spacing: 0.15px;
   text-decoration: underline;
   cursor: pointer;
+`;
+
+export const PaginationContainer = styled(Pagination)`
+  ul {
+    justify-content: center;
+  }
 `;

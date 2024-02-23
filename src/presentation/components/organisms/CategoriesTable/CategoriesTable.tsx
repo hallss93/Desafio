@@ -1,6 +1,7 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import LoadingButton from '@mui/lab/LoadingButton';
+import { Pagination } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -21,6 +22,7 @@ import {
   ErrorContainer,
   HeaderCell,
   InfoContainer,
+  PaginationContainer,
   Table,
   TableBody,
   TableCell,
@@ -32,42 +34,21 @@ import {
 const CategoriesTable = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const [iemSelected, setItemSelected] = useState(0);
+  const [itemSelected, setItemSelected] = useState(0);
+  const [page, setPage] = useState(1);
 
-  const { categories, categoriesError, categoriesLoading, deleteLoading } = useSelector(
+  const { categories, pagination, categoriesError, categoriesLoading, deleteLoading } = useSelector(
     (state: any) => state.categories,
   );
   const history = useNavigate();
 
   const getList = () => {
-    dispatch(getCategories() as any);
+    dispatch(getCategories(page - 1) as any);
   };
 
   useEffect(() => {
     getList();
   }, []);
-
-  if (categoriesLoading) {
-    return <InfoContainer>Carregando...</InfoContainer>;
-  }
-
-  if (categoriesError) {
-    return (
-      <ErrorContainer>
-        <BiErrorCircle size={24} />
-        Ocorreu um erro inesperado. Tente novamente mais tarde.
-      </ErrorContainer>
-    );
-  }
-
-  if (!categoriesLoading && !categories?.length) {
-    return (
-      <InfoContainer>
-        <BiInfoCircle size={24} />
-        Não encontramos resultados para sua pesquisa.
-      </InfoContainer>
-    );
-  }
 
   const handleClickOpen = (id: number) => {
     setItemSelected(id);
@@ -79,9 +60,16 @@ const CategoriesTable = () => {
   };
 
   const handleDelete = async () => {
-    await dispatch(deleteCategory(iemSelected) as any);
+    await dispatch(deleteCategory(itemSelected) as any);
     setOpen(false);
     getList();
+  };
+
+  const handlePageChange = (_e: React.ChangeEvent<unknown>, p: number) => {
+    if (p === page) return;
+
+    setPage(p);
+    dispatch(getCategories(p - 1) as any);
   };
 
   return (
@@ -103,6 +91,33 @@ const CategoriesTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
+            {categoriesLoading && (
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <InfoContainer>Carregando...</InfoContainer>
+                </TableCell>
+              </TableRow>
+            )}
+            {categoriesError && (
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <ErrorContainer>
+                    <BiErrorCircle size={24} />
+                    Ocorreu um erro inesperado. Tente novamente mais tarde.
+                  </ErrorContainer>
+                </TableCell>
+              </TableRow>
+            )}
+            {!categoriesLoading && categories.length === 0 && !categoriesError && (
+              <TableRow>
+                <TableCell colSpan={5}>
+                  <InfoContainer>
+                    <BiInfoCircle size={24} />
+                    Não encontramos resultados para sua pesquisa.
+                  </InfoContainer>
+                </TableCell>
+              </TableRow>
+            )}
             {categories.map((row: ICategory) => (
               <Fragment key={row.id}>
                 <TableRow>
@@ -111,11 +126,11 @@ const CategoriesTable = () => {
                   <TableCell>{row.created}</TableCell>
                   <TableCell>{row.updated}</TableCell>
                   <TableCell>
-                    <IconButton aria-label="delete">
-                      <DeleteIcon onClick={() => handleClickOpen(row.id)} />
+                    <IconButton aria-label="delete" onClick={() => handleClickOpen(row.id)}>
+                      <DeleteIcon />
                     </IconButton>
-                    <IconButton aria-label="delete">
-                      <EditIcon color="primary" onClick={() => history(`/category/${row.id}`)} />
+                    <IconButton aria-label="delete" onClick={() => history(`/category/${row.id}`)}>
+                      <EditIcon color="primary" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -128,6 +143,12 @@ const CategoriesTable = () => {
             ))}
           </TableBody>
         </Table>
+        <PaginationContainer
+          count={pagination.totalPages}
+          shape="rounded"
+          onChange={handlePageChange}
+          page={page}
+        />
       </TableContainer>
       <Dialog
         open={open}
