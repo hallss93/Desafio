@@ -4,11 +4,13 @@ import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {
   Avatar,
+  Box,
   InputAdornment,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  TableSortLabel,
 } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
@@ -25,6 +27,7 @@ import { useNavigate } from 'react-router-dom';
 import IProduct from '~/models/productModel';
 
 import ButtonComponent from '../../atoms/Button';
+import HeaderCellMui from '../../atoms/HeaderCellMui';
 import TableRowMessage from '../../molecules/TableRowMessage';
 import { deleteProduct, getProducts } from './../../../store/modules/products/actions';
 import {
@@ -41,12 +44,16 @@ import {
   TableRow,
 } from './styles';
 
+type Order = 'asc' | 'desc';
+
 const ProductsTable = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [itemSelected, setItemSelected] = useState(0);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState('');
+  const [orderBy, setOrderBy] = useState('title');
+  const [order, setOrder] = useState<Order>('desc');
 
   const { products, pagination, productsError, productsLoading, deleteLoading } = useSelector(
     (state: any) => state.products,
@@ -54,7 +61,7 @@ const ProductsTable = () => {
   const history = useNavigate();
 
   const getList = () => {
-    dispatch(getProducts({ page: page - 1, query }) as any);
+    dispatch(getProducts({ page: page - 1, query, order, orderBy }) as any);
   };
 
   useEffect(() => {
@@ -80,7 +87,7 @@ const ProductsTable = () => {
     if (p === page) return;
 
     setPage(p);
-    dispatch(getProducts({ page: p - 1, query }) as any);
+    dispatch(getProducts({ page: p - 1, query, order, orderBy }) as any);
   };
 
   const handlKeyPressSearch = (e: any) => {
@@ -91,11 +98,19 @@ const ProductsTable = () => {
 
   const handleClickSearch = () => {
     setPage(1);
-    dispatch(getProducts({ page: 0, query }) as any);
+    dispatch(getProducts({ page: 0, query, order, orderBy }) as any);
   };
 
   const handleChangeSearch = (e: any) => {
     setQuery(e.target.value);
+  };
+
+  const createSortHandler = (property: keyof IProduct) => (event: React.MouseEvent<unknown>) => {
+    const isAsc = orderBy === property && order === 'asc';
+    const newOrder = isAsc ? 'desc' : 'asc';
+    setOrder(newOrder);
+    setOrderBy(property);
+    dispatch(getProducts({ page: page - 1, query, order: newOrder, orderBy: property }) as any);
   };
 
   return (
@@ -121,9 +136,21 @@ const ProductsTable = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <HeaderCell>Nome</HeaderCell>
+              <HeaderCellMui
+                handleSort={createSortHandler}
+                orderBy={orderBy}
+                order={order}
+                name="title"
+                title="Nome"
+              ></HeaderCellMui>
               <HeaderCell>Descrição</HeaderCell>
-              <HeaderCell>Marca</HeaderCell>
+              <HeaderCellMui
+                handleSort={createSortHandler}
+                orderBy={orderBy}
+                order={order}
+                name="brand"
+                title="Marca"
+              ></HeaderCellMui>
               <HeaderCell>Preço</HeaderCell>
               <HeaderCell>Desconto (%)</HeaderCell>
               <HeaderCell>Categoria</HeaderCell>

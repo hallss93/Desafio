@@ -6,15 +6,19 @@ const getProducts = ({
   page,
   query,
   size = 5,
+  order,
+  orderBy,
 }: {
   page: number;
   size?: number;
   query?: string;
+  order?: string;
+  orderBy?: string;
 }) => {
   return async (dispatch: any) => {
     dispatch({ type: RepositoriesTypes.PRODUCTS_LOADING, payload: true });
     try {
-      const response = await productsService.getAllProducts({ page, size, query });
+      const response = await productsService.getAllProducts({ page, size, query, order, orderBy });
       dispatch({
         type: RepositoriesTypes.PRODUCTS,
         payload: response.data,

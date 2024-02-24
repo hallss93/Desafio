@@ -30,6 +30,8 @@ export class ProductService {
     page: number,
     size: number,
     query: string,
+    order: 'ASC' | 'DESC',
+    orderBy: keyof Product,
   ): Promise<Count<Product> | any> {
     let where = {};
     if (query)
@@ -46,6 +48,9 @@ export class ProductService {
       take: size,
       skip: page * size,
       where,
+      order: {
+        [orderBy]: order.toUpperCase(),
+      },
     });
   }
 
@@ -59,7 +64,7 @@ export class ProductService {
   }
 
   public async create(product: ProductDto, file): Promise<Product | any> {
-    console.log(product)
+    console.log(product);
     const object: Product = product as Product;
     if (file) {
       try {

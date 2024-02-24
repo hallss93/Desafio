@@ -33,8 +33,16 @@ export class ProductController {
     @Query('page') page: number,
     @Query('size') size: number,
     @Query('query') query: string,
+    @Query('order') order: 'ASC' | 'DESC',
+    @Query('orderBy') orderBy: keyof Product,
   ): Promise<ProductPagination[]> {
-    return this.productService.findAllProducts(page, size, query);
+    return this.productService.findAllProducts(
+      page,
+      size,
+      query,
+      order,
+      orderBy,
+    );
   }
 
   @Get('/:id')
