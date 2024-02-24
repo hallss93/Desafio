@@ -1,26 +1,13 @@
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
-import {
-  Avatar,
-  Box,
-  InputAdornment,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  TableSortLabel,
-} from '@mui/material';
+import { InputAdornment } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import IconButton from '@mui/material/IconButton';
-import { format } from 'date-fns';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,6 +15,7 @@ import IProduct from '~/models/productModel';
 
 import ButtonComponent from '../../atoms/Button';
 import HeaderCellMui from '../../atoms/HeaderCellMui';
+import ProductsTableRow from '../../molecules/ProductsTableRow/ProductsTableRow';
 import TableRowMessage from '../../molecules/TableRowMessage';
 import { deleteProduct, getProducts } from './../../../store/modules/products/actions';
 import {
@@ -159,7 +147,7 @@ const ProductsTable = () => {
               <HeaderCell>Ação</HeaderCell>
             </TableRow>
             <TableRow>
-              <TableCell colSpan={6}>
+              <TableCell colSpan={9}>
                 <Divider />
               </TableCell>
             </TableRow>
@@ -170,44 +158,11 @@ const ProductsTable = () => {
               rows={products}
               error={productsError}
             ></TableRowMessage>
-            {products.map((row: IProduct) => (
-              <Fragment key={row.id}>
-                <TableRow>
-                  <TableCell>
-                    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-                      <ListItem>
-                        {row.image && (
-                          <ListItemAvatar>
-                            <Avatar alt={row.title} src={row.image} />
-                          </ListItemAvatar>
-                        )}
-                        <ListItemText primary={row.title} />
-                      </ListItem>
-                    </List>
-                  </TableCell>
-                  <TableCell>{row.description}</TableCell>
-                  <TableCell>{row.brand}</TableCell>
-                  <TableCell>R$ {row.price}</TableCell>
-                  <TableCell>{row.discountPercentage}</TableCell>
-                  <TableCell>{row.category?.name}</TableCell>
-                  <TableCell>{format(row.created, 'dd/mm/yyyy H:mma')}</TableCell>
-                  <TableCell>{format(row.updated, 'dd/mm/yyyy H:mma')}</TableCell>
-                  <TableCell>
-                    <IconButton aria-label="delete" onClick={() => handleClickOpen(row.id)}>
-                      <DeleteIcon />
-                    </IconButton>
-                    <IconButton aria-label="delete" onClick={() => history(`/products/${row.id}`)}>
-                      <EditIcon color="primary" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell colSpan={6}>
-                    <Divider />
-                  </TableCell>
-                </TableRow>
-              </Fragment>
-            ))}
+            <ProductsTableRow
+              rows={products}
+              handleClickDelete={handleClickOpen}
+              handleClickEdit={(id: number) => history(`/products/${id}`)}
+            ></ProductsTableRow>
           </TableBody>
         </Table>
         <PaginationContainer
