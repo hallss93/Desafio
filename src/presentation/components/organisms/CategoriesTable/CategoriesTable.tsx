@@ -10,18 +10,16 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import { format } from 'date-fns';
 import React, { Fragment, useEffect, useState } from 'react';
-import { BiErrorCircle, BiInfoCircle } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import ICategory from '~/models/categoryModel';
 
+import TableRowMessage from '../../molecules/TableRowMessage';
 import { deleteCategory, getCategories } from './../../../store/modules/categories/actions';
 import {
   Divider,
-  ErrorContainer,
   HeaderCell,
-  InfoContainer,
   PaginationContainer,
   Table,
   TableBody,
@@ -91,33 +89,11 @@ const CategoriesTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {categoriesLoading && (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <InfoContainer>Carregando...</InfoContainer>
-                </TableCell>
-              </TableRow>
-            )}
-            {categoriesError && (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <ErrorContainer>
-                    <BiErrorCircle size={24} />
-                    Ocorreu um erro inesperado. Tente novamente mais tarde.
-                  </ErrorContainer>
-                </TableCell>
-              </TableRow>
-            )}
-            {!categoriesLoading && categories.length === 0 && !categoriesError && (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <InfoContainer>
-                    <BiInfoCircle size={24} />
-                    Não encontramos resultados para sua pesquisa.
-                  </InfoContainer>
-                </TableCell>
-              </TableRow>
-            )}
+            <TableRowMessage
+              loading={categoriesLoading}
+              rows={categories}
+              error={categoriesError}
+            ></TableRowMessage>
             {categories.map((row: ICategory) => (
               <Fragment key={row.id}>
                 <TableRow>

@@ -19,19 +19,17 @@ import DialogTitle from '@mui/material/DialogTitle';
 import IconButton from '@mui/material/IconButton';
 import { format } from 'date-fns';
 import React, { Fragment, useEffect, useState } from 'react';
-import { BiErrorCircle, BiInfoCircle } from 'react-icons/bi';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import IProduct from '~/models/productModel';
 
 import ButtonComponent from '../../atoms/Button';
+import TableRowMessage from '../../molecules/TableRowMessage';
 import { deleteProduct, getProducts } from './../../../store/modules/products/actions';
 import {
   Divider,
-  ErrorContainer,
   HeaderCell,
-  InfoContainer,
   InputSearchComponent,
   PaginationContainer,
   SearchContainer,
@@ -125,6 +123,9 @@ const ProductsTable = () => {
             <TableRow>
               <HeaderCell>Nome</HeaderCell>
               <HeaderCell>Descrição</HeaderCell>
+              <HeaderCell>Marca</HeaderCell>
+              <HeaderCell>Preço</HeaderCell>
+              <HeaderCell>Desconto (%)</HeaderCell>
               <HeaderCell>Categoria</HeaderCell>
               <HeaderCell>Criado</HeaderCell>
               <HeaderCell>Atualizado</HeaderCell>
@@ -137,33 +138,11 @@ const ProductsTable = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {productsLoading && (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <InfoContainer>Carregando...</InfoContainer>
-                </TableCell>
-              </TableRow>
-            )}
-            {productsError && (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <ErrorContainer>
-                    <BiErrorCircle size={24} />
-                    Ocorreu um erro inesperado. Tente novamente mais tarde.
-                  </ErrorContainer>
-                </TableCell>
-              </TableRow>
-            )}
-            {!productsLoading && products.length === 0 && !productsError && (
-              <TableRow>
-                <TableCell colSpan={5}>
-                  <InfoContainer>
-                    <BiInfoCircle size={24} />
-                    Não encontramos resultados para sua pesquisa.
-                  </InfoContainer>
-                </TableCell>
-              </TableRow>
-            )}
+            <TableRowMessage
+              loading={productsLoading}
+              rows={products}
+              error={productsError}
+            ></TableRowMessage>
             {products.map((row: IProduct) => (
               <Fragment key={row.id}>
                 <TableRow>
@@ -180,6 +159,9 @@ const ProductsTable = () => {
                     </List>
                   </TableCell>
                   <TableCell>{row.description}</TableCell>
+                  <TableCell>{row.brand}</TableCell>
+                  <TableCell>R$ {row.price}</TableCell>
+                  <TableCell>{row.discountPercentage}</TableCell>
                   <TableCell>{row.category?.name}</TableCell>
                   <TableCell>{format(row.created, 'dd/mm/yyyy H:mma')}</TableCell>
                   <TableCell>{format(row.updated, 'dd/mm/yyyy H:mma')}</TableCell>

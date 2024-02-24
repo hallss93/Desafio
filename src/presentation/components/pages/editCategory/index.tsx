@@ -46,7 +46,6 @@ const EditCategoryPage = () => {
   });
 
   const onSubmit = (data: any) => {
-    console.log(JSON.stringify(data, null, 2));
     handleSave(data);
   };
 
@@ -146,7 +145,7 @@ const EditCategoryPage = () => {
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 {...register('name')}
-                error={errors.name ? true : false}
+                error={!!errors.name}
               />
               <Typography variant="caption" color="red">
                 {errors.name?.message}
@@ -159,7 +158,7 @@ const EditCategoryPage = () => {
                 fullWidth
                 InputLabelProps={{ shrink: true }}
                 {...register('description')}
-                error={errors.description ? true : false}
+                error={!!errors.description}
               />
               <Typography variant="caption" color="red">
                 {errors.description?.message}

@@ -21,12 +21,12 @@ export class Product extends CreatedUpdatedEntity {
   @IsString()
   title: string;
 
-  @Column({ nullable: false, default: 0 })
+  @Column('decimal', { precision: 10, scale: 2, nullable: false, default: 0 })
   @ApiProperty()
   @IsInt()
   price: number;
 
-  @Column({ nullable: false, default: 0 })
+  @Column('decimal', { precision: 10, scale: 2, nullable: false, default: 0 })
   @ApiProperty()
   @IsInt()
   discountPercentage: number;

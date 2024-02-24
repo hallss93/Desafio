@@ -13,3 +13,11 @@ export const getInitials = (name: string) => {
   }
   return initials.join('');
 };
+
+export const convertCurrencyToNumber = (num: string) => {
+  return num.replace('R$ ', '').replaceAll('.', '').replaceAll(',', '.');
+};
+
+export const removePercentSimbol = (num: string) => {
+  return num.replace('%', '');
+};

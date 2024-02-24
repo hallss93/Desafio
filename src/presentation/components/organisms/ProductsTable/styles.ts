@@ -67,71 +67,11 @@ export const HeaderCell = styled.td`
   text-align: left;
 `;
 
-export const HeaderContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  max-width: 100%;
-  width: 100%;
-  gap: 10px;
-`;
-
 export const Divider = styled.div`
   width: calc(100% + 4rem);
   height: 1px;
   background-color: rgba(0, 0, 0, 0.12);
   margin-left: -2rem;
-`;
-
-export const ErrorContainer = styled.div`
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  padding: 1rem;
-  font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 143%;
-  letter-spacing: 0.17px;
-  color: #541313;
-  background-color: #fbeaea;
-  border-radius: 4px;
-`;
-
-export const InfoContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  padding: 1rem;
-  font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 143%;
-  letter-spacing: 0.17px;
-  color: #013654;
-  background-color: #e6f3fa;
-  border-radius: 4px;
-`;
-
-export const EditLink = styled.div`
-  color: #e6226d;
-  font-family: Roboto;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%;
-  letter-spacing: 0.15px;
-  text-decoration: underline;
-  cursor: pointer;
 `;
 
 export const PaginationContainer = styled(Pagination)`
