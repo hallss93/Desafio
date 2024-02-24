@@ -1,21 +1,21 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Grid, Snackbar, TextField, Typography } from '@mui/material';
+import { Grid, TextField, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import * as Yup from 'yup';
 
 import ICategory from '~/models/categoryModel';
 import IProduct from '~/models/productModel';
 import { getCategories } from '~/presentation/store/modules/categories/actions';
+import { showMessage } from '~/presentation/store/modules/messages/actions';
 import { convertCurrencyToNumber, removePercentSimbol } from '~/presentation/utils';
 
 import NumericFormatCustom from '../../atoms/NumericFormatCustom';
 import InputFileUpload from '../../molecules/FileInput';
 import ProductsEditHeader from '../../organisms/ProductsEditHeader/ProductsEditHeader';
 import productsService from './../../../../services/productsService';
+import { validationSchemaProduct } from './schema';
 import {
   CustomAutoComplete,
   CustomTextField,
@@ -30,8 +30,6 @@ const EditProductPage = () => {
   const dispatch = useDispatch();
   const history = useNavigate();
 
-  const [openError, setOpenError] = useState(false);
-  const [openSuccess, setOpenSuccess] = useState(false);
   const [categoryObject, setCategoryObject] = useState<any>(null);
   const [inputValue, setInputValue] = useState('');
   const [file, setFile] = useState<Blob>();
@@ -43,32 +41,12 @@ const EditProductPage = () => {
 
   const { id } = useParams<{ id: string }>();
 
-  const validationSchema = Yup.object().shape({
-    title: Yup.string()
-      .required('Nome é um campo obrigatório')
-      .min(3, 'Nome deve ter no mínimo 3 caracteres')
-      .max(150, 'Nome deve ter no máximo 150 caracteres'),
-    brand: Yup.string()
-      .required('Marca é um campo obrigatório')
-      .min(3, 'Marca deve ter no mínimo 3 caracteres')
-      .max(50, 'Marca deve ter no máximo 50 caracteres'),
-    description: Yup.string()
-      .required('Descrição é um campo obrigatório')
-      .min(3, 'Descrição deve ter no mínimo 3 caracteres')
-      .max(150, 'Descrição deve ter no máximo 150 caracteres'),
-    category: Yup.string().required('Categoria é um campo obrigatório'),
-    discountPercentage: Yup.string().notRequired(),
-    price: Yup.string().required('Preço é um campo obrigatório'),
-  });
-
   const {
     register,
     setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: yupResolver(validationSchema),
-  });
+  } = useForm({ resolver: yupResolver(validationSchemaProduct) });
 
   const onSubmit = (data: any) => {
     handleSave({ ...data, category: categoryObject.id, id });
@@ -119,7 +97,7 @@ const EditProductPage = () => {
           successMessageRedirect();
         })
         .catch(() => {
-          setOpenError(true);
+          dispatch(showMessage('Ocorreu um erro ao tentar Atualizar o Produto', 'error') as any);
         });
     } else {
       await productsService
@@ -128,21 +106,14 @@ const EditProductPage = () => {
           successMessageRedirect();
         })
         .catch(() => {
-          setOpenError(true);
+          dispatch(showMessage('Ocorreu um erro ao tentar Criar o Produto', 'error') as any);
         });
     }
   }
 
-  function handleClose() {
-    setOpenError(false);
-    setOpenSuccess(false);
-  }
-
   function successMessageRedirect() {
-    setOpenSuccess(true);
-    setTimeout(() => {
-      history('/products');
-    }, 1000);
+    dispatch(showMessage(`Produto ${id !== 'create' ? 'editado' : 'criado'} com sucesso!`) as any);
+    history('/products');
   }
 
   function handleChangeImage(event: any) {
@@ -306,24 +277,6 @@ const EditProductPage = () => {
           </Grid>
         </FormContainer>
       </PageContainer>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={openError}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="error" variant="filled" sx={{ width: '100%' }}>
-          Ocorreu um erro!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={openSuccess}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
-          Produto {id !== 'create' ? 'editada' : 'criada'} com sucesso;
-        </Alert>
-      </Snackbar>
     </Page>
   );
 };

@@ -1,6 +1,7 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import { Row } from '~/presentation/components/atoms/Row/Row';
+import SnackbarComponent from '~/presentation/components/atoms/SnackbarComponent';
 import SideMenu from '~/presentation/components/organisms/SideMenu/SideMenu';
 import CategoriesPage from '~/presentation/components/pages/categories';
 import EditCategoryPage from '~/presentation/components/pages/editCategory';
@@ -16,6 +17,8 @@ const routes = () => {
   return (
     <Row justifyContent="center" alignItems="center">
       {isPrivateRoute() && <SideMenu />}
+
+      <SnackbarComponent></SnackbarComponent>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/login" element={<LoginPage />} />

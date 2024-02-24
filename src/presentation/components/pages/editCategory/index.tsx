@@ -1,13 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Alert, Grid, Snackbar, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Grid, Typography } from '@mui/material';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import * as Yup from 'yup';
 
 import ICategory from '~/models/categoryModel';
+import { showMessage } from '~/presentation/store/modules/messages/actions';
 
 import categoriesService from './../../../../services/categoriesService';
+import { validationSchemaCategory } from './schema';
 import {
   ButtonsContainer,
   CustomTextField,
@@ -19,22 +21,9 @@ import {
 } from './styles';
 
 const EditCategoryPage = () => {
-  const [openError, setOpenError] = useState(false);
-  const [openSuccess, setOpenSuccess] = useState(false);
-
+  const dispatch = useDispatch();
   const history = useNavigate();
   const { id } = useParams<{ id: string }>();
-
-  const validationSchema = Yup.object().shape({
-    name: Yup.string()
-      .required('Nome é um campo obrigatório')
-      .min(3, 'Nome deve ter no mínimo 3 caracteres')
-      .max(150, 'Nome deve ter no máximo 150 caracteres'),
-    description: Yup.string()
-      .required('Descrição é um campo obrigatório')
-      .min(3, 'Descrição deve ter no mínimo 3 caracteres')
-      .max(150, 'Descrição deve ter no máximo 150 caracteres'),
-  });
 
   const {
     register,
@@ -42,7 +31,7 @@ const EditCategoryPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchemaCategory),
   });
 
   const onSubmit = (data: any) => {
@@ -69,7 +58,7 @@ const EditCategoryPage = () => {
           successMessageRedirect();
         })
         .catch(() => {
-          setOpenError(true);
+          dispatch(showMessage('Ocorreu um erro ao tentar Atualizar a Categorria', 'error') as any);
         });
     } else {
       await categoriesService
@@ -78,21 +67,16 @@ const EditCategoryPage = () => {
           successMessageRedirect();
         })
         .catch(() => {
-          setOpenError(true);
+          dispatch(showMessage('Ocorreu um erro ao tentar Criar a Categorria', 'error') as any);
         });
     }
   }
 
-  function handleClose() {
-    setOpenError(false);
-    setOpenSuccess(false);
-  }
-
   function successMessageRedirect() {
-    setOpenSuccess(true);
-    setTimeout(() => {
-      history('/categories');
-    }, 1000);
+    dispatch(
+      showMessage(`Categoria ${id !== 'create' ? 'editada' : 'criada'} com sucesso!`) as any,
+    );
+    history('/categories');
   }
 
   return (
@@ -167,24 +151,6 @@ const EditCategoryPage = () => {
           </Grid>
         </FormContainer>
       </PageContainer>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={openError}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="error" variant="filled" sx={{ width: '100%' }}>
-          Ocorreu um erro!
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={openSuccess}
-        onClose={handleClose}
-      >
-        <Alert onClose={handleClose} severity="success" variant="filled" sx={{ width: '100%' }}>
-          Categoria {id !== 'create' ? 'editada' : 'criada'} com sucesso;
-        </Alert>
-      </Snackbar>
     </Page>
   );
 };
