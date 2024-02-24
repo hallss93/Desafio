@@ -34,13 +34,14 @@ const EditProductPage = () => {
   const [categoryObject, setCategoryObject] = useState<any>(null);
   const [inputValue, setInputValue] = useState('');
   const [file, setFile] = useState<Blob>();
+  const [image, setImage] = useState();
 
   const { categories } = useSelector((state: any) => state.categories);
 
   const { id } = useParams<{ id: string }>();
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string()
+    title: Yup.string()
       .required('Nome é um campo obrigatório')
       .min(3, 'Nome deve ter no mínimo 3 caracteres')
       .max(150, 'Nome deve ter no máximo 150 caracteres'),
@@ -67,9 +68,11 @@ const EditProductPage = () => {
   useEffect(() => {
     if (id !== 'create') {
       productsService.getProductById({ id: Number(id) }).then((response) => {
-        setValue('name', response.name);
+        setValue('title', response.title);
         setValue('description', response.description);
         setValue('category', response.category);
+        setImage(response.image);
+        console.log(response.image);
         const category = categories.find((i: ICategory) => i.id === response.category);
 
         if (category) setCategoryObject({ id: category.id, label: category.name });
@@ -87,13 +90,13 @@ const EditProductPage = () => {
 
   async function handleSave(data: IProduct) {
     const formData = new FormData();
-    formData.append('id', data.id);
-    formData.append('name', data.name);
+    formData.append('title', data.title);
     formData.append('description', data.description);
     formData.append('category', categoryObject.id);
     if (file) formData.append('image', file);
 
     if (id !== 'create') {
+      formData.append('id', String(data.id));
       await productsService
         .editProduct(Number(id), formData)
         .then(() => {
@@ -127,7 +130,6 @@ const EditProductPage = () => {
   }
 
   function handleChangeImage(event: any) {
-    console.log(event.target.files);
     if (event.target.files.length) {
       setFile(event.target.files[0]);
       const tgt = event.target,
@@ -196,6 +198,7 @@ const EditProductPage = () => {
               alignItems="center"
             >
               {file && <ProductImage id="product-img" alt="Produto" />}
+              {!file && image && <ProductImage id="product-img" src={image} alt="Produto" />}
               <InputFileUpload
                 description="Escolher Imagem"
                 handleChange={handleChangeImage}
@@ -232,11 +235,11 @@ const EditProductPage = () => {
                 variant="standard"
                 fullWidth
                 InputLabelProps={{ shrink: true }}
-                {...register('name')}
-                error={!!errors.name}
+                {...register('title')}
+                error={!!errors.title}
               />
               <Typography variant="caption" color="red">
-                {errors.name?.message}
+                {errors.title?.message}
               </Typography>
             </Grid>
             <Grid item xs={12} sm={12}>

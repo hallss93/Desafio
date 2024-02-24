@@ -1,6 +1,10 @@
 export class ProductRO {
   id: number;
-  name: string;
+  title: string;
+  price: number;
+  discountPercentage: number;
+  brand: string;
   description: string;
+  image: string;
   category: number;
 }

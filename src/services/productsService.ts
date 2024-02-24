@@ -1,4 +1,3 @@
-import { EditProduct } from '~/domain/models/edit-product';
 import { GetAllProducts } from '~/domain/models/get-all-products';
 import { GetProductById } from '~/domain/models/get-product-by-id';
 import { makeCreateProduct } from '~/infra/http/use-cases/factories/make-create-product';

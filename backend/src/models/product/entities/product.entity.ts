@@ -19,7 +19,22 @@ export class Product extends CreatedUpdatedEntity {
   @Column()
   @ApiProperty()
   @IsString()
-  name: string;
+  title: string;
+
+  @Column({ nullable: false, default: 0 })
+  @ApiProperty()
+  @IsInt()
+  price: number;
+
+  @Column({ nullable: false, default: 0 })
+  @ApiProperty()
+  @IsInt()
+  discountPercentage: number;
+
+  @Column({ nullable: false, default: '' })
+  @ApiProperty()
+  @IsString()
+  brand: string;
 
   @Column({ nullable: true })
   @ApiProperty()
@@ -39,11 +54,24 @@ export class Product extends CreatedUpdatedEntity {
   category: number;
 
   toResponseObject(): ProductRO {
-    const { id, name, description, category } = this;
+    const {
+      id,
+      title,
+      price,
+      discountPercentage,
+      brand,
+      description,
+      image,
+      category,
+    } = this;
     const responseObject: ProductRO = {
       id,
-      name,
+      title,
+      price,
+      discountPercentage,
+      brand,
       description,
+      image,
       category,
     };
 

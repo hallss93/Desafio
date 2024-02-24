@@ -1,4 +1,3 @@
-import { Button } from '@mui/material';
 import styled from 'styled-components';
 
 export const Page = styled.div`
@@ -30,16 +29,4 @@ export const Header = styled.div`
   justify-content: flex-end;
   width: 100%;
   margin-top: 16px;
-`;
-
-export const StyledButton = styled(Button)`
-  width: max-content;
-  font-family: 'Roboto', sans-serif;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 143%;
-  text-transform: none;
-  border-radius: 4px;
-  padding: 0.5rem 1rem;
 `;

@@ -9,7 +9,6 @@ import {
   Query,
   UploadedFile,
   UseInterceptors,
-  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
@@ -33,9 +32,9 @@ export class ProductController {
   async getProductList(
     @Query('page') page: number,
     @Query('size') size: number,
+    @Query('query') query: string,
   ): Promise<ProductPagination[]> {
-    console.log(size);
-    return this.productService.findAllProducts(page, size);
+    return this.productService.findAllProducts(page, size, query);
   }
 
   @Get('/:id')

@@ -1,6 +1,15 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import SearchOutlined from '@mui/icons-material/SearchOutlined';
 import LoadingButton from '@mui/lab/LoadingButton';
+import {
+  Avatar,
+  InputAdornment,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+} from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -16,13 +25,16 @@ import { useNavigate } from 'react-router-dom';
 
 import IProduct from '~/models/productModel';
 
+import ButtonComponent from '../../atoms/Button';
 import { deleteProduct, getProducts } from './../../../store/modules/products/actions';
 import {
   Divider,
   ErrorContainer,
   HeaderCell,
   InfoContainer,
+  InputSearchComponent,
   PaginationContainer,
+  SearchContainer,
   Table,
   TableBody,
   TableCell,
@@ -30,13 +42,13 @@ import {
   TableHead,
   TableRow,
 } from './styles';
-import { Avatar, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
 
 const ProductsTable = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [itemSelected, setItemSelected] = useState(0);
   const [page, setPage] = useState(1);
+  const [query, setQuery] = useState('');
 
   const { products, pagination, productsError, productsLoading, deleteLoading } = useSelector(
     (state: any) => state.products,
@@ -44,7 +56,7 @@ const ProductsTable = () => {
   const history = useNavigate();
 
   const getList = () => {
-    dispatch(getProducts(page - 1) as any);
+    dispatch(getProducts({ page: page - 1, query }) as any);
   };
 
   useEffect(() => {
@@ -70,12 +82,44 @@ const ProductsTable = () => {
     if (p === page) return;
 
     setPage(p);
-    dispatch(getProducts(p - 1) as any);
+    dispatch(getProducts({ page: p - 1, query }) as any);
+  };
+
+  const handlKeyPressSearch = (e: any) => {
+    if (e.keyCode == 13) {
+      handleClickSearch();
+    }
+  };
+
+  const handleClickSearch = () => {
+    setPage(1);
+    dispatch(getProducts({ page: 0, query }) as any);
+  };
+
+  const handleChangeSearch = (e: any) => {
+    setQuery(e.target.value);
   };
 
   return (
     <>
       <TableContainer>
+        <SearchContainer>
+          <InputSearchComponent
+            label="Buscar"
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchOutlined />
+                </InputAdornment>
+              ),
+            }}
+            variant="standard"
+            onKeyDown={handlKeyPressSearch}
+            onChange={handleChangeSearch}
+            value={query}
+          />
+          <ButtonComponent handleClick={handleClickSearch} text="Buscar" />
+        </SearchContainer>
         <Table>
           <TableHead>
             <TableRow>
@@ -128,10 +172,10 @@ const ProductsTable = () => {
                       <ListItem>
                         {row.image && (
                           <ListItemAvatar>
-                            <Avatar alt={row.name} src={row.image} />
+                            <Avatar alt={row.title} src={row.image} />
                           </ListItemAvatar>
                         )}
-                        <ListItemText primary={row.name} />
+                        <ListItemText primary={row.title} />
                       </ListItem>
                     </List>
                   </TableCell>

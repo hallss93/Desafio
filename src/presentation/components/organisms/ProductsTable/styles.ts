@@ -1,4 +1,4 @@
-import { Pagination } from '@mui/material';
+import { Pagination, TextField } from '@mui/material';
 import styled from 'styled-components';
 
 export const TableContainer = styled.div`
@@ -138,4 +138,13 @@ export const PaginationContainer = styled(Pagination)`
   ul {
     justify-content: center;
   }
+`;
+
+export const InputSearchComponent = styled(TextField)`
+  width: 100%;
+`;
+
+export const SearchContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;

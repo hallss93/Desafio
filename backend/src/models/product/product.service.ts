@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, Like, Repository } from 'typeorm';
 import Count from '../../common/interfaces/Count';
 import { Product } from './entities/product.entity';
 import { ProductRO } from './interfaces/product.ro';
@@ -29,11 +29,23 @@ export class ProductService {
   public findAllProducts(
     page: number,
     size: number,
+    query: string,
   ): Promise<Count<Product> | any> {
+    let where = {};
+    if (query)
+      where = [
+        {
+          title: Like(`%${query}%`),
+        },
+        {
+          brand: Like(`%${query}%`),
+        },
+      ];
     return this.productRepository.findAndCount({
       relations: ['category'],
       take: size,
       skip: page * size,
+      where,
     });
   }
 
@@ -47,11 +59,16 @@ export class ProductService {
   }
 
   public async create(product: ProductDto, file): Promise<Product | any> {
-    let object: Product = product as Product;
+    console.log(product)
+    const object: Product = product as Product;
     if (file) {
-      const aws_image_object = await this.uploadFile(file);
+      try {
+        const aws_image_object = await this.uploadFile(file);
 
-      object.image = aws_image_object.Location;
+        object.image = aws_image_object.Location;
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     const newProduct = this.productRepository.create({
@@ -72,11 +89,15 @@ export class ProductService {
       console.error("product doesn't exist");
     }
 
-    let object: Product = newValue as Product;
+    const object: Product = newValue as Product;
     if (file) {
-      const aws_image_object = await this.uploadFile(file);
+      try {
+        const aws_image_object = await this.uploadFile(file);
 
-      object.image = aws_image_object.Location;
+        object.image = aws_image_object.Location;
+      } catch (e) {
+        console.log(e);
+      }
     }
 
     const newProduct = this.productRepository.create(object);
@@ -90,7 +111,6 @@ export class ProductService {
   }
 
   async uploadFile(file) {
-    console.log(file);
     const { originalname } = file;
 
     return await this.s3_upload(
@@ -114,8 +134,7 @@ export class ProductService {
     };
 
     try {
-      let s3Response = await this.s3.upload(params).promise();
-      return s3Response;
+      return await this.s3.upload(params).promise();
     } catch (e) {
       console.log(e);
     }
